@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Invitación 💗</title>
+  <style>
+    :root{
+      --bg1:#ffedf6;
+      --bg2:#ffe2f1;
+      --bg3:#f7e9ff;
+      --card: rgba(255,255,255,.55);
+      --cardBorder: rgba(255,255,255,.65);
+      --text:#3a2b3d;
+      --muted: rgba(58,43,61,.65);
+      --shadow: rgba(255, 90, 170, .18);
+      --yes1:#ff5aa6;
+      --yes2:#ff86c4;
+      --no1:#b98bff;
+      --no2:#8fd3ff;
+      --ring: rgba(255,90,166,.22);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% 10%, var(--bg3), transparent 60%),
+                  radial-gradient(900px 500px at 80% 0%, var(--bg2), transparent 55%),
+                  radial-gradient(1000px 700px at 50% 100%, var(--bg1), transparent 60%),
+                  linear-gradient(135deg, #fff, #ffeaf5);
+      overflow:hidden;
+    }
+
+    /* Fondo de burbujas */
+    .bubbles{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .bubble{
+      position:absolute;
+      bottom:-120px;
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(255,255,255,.9),
+        rgba(255,255,255,.35) 35%,
+        rgba(255,120,190,.18) 70%,
+        rgba(255,120,190,.08)
+      );
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: 0 18px 45px rgba(255, 90, 170, .12);
+      opacity:.85;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) translateX(0) scale(1); }
+      to  { transform: translateY(-120vh) translateX(60px) scale(1.05); }
+    }
+
+    /* Card */
+    .card{
+      width:min(580px, 92vw);
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 25px 70px var(--shadow);
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,90,166,.25), rgba(185,139,255,.18), rgba(143,211,255,.14));
+      z-index:-1;
+      filter: blur(12px);
+      opacity:.65;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: 20px;
+      letter-spacing:.2px;
+      display:flex; gap:10px; align-items:center;
+    }
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,90,166,.14);
+      border: 1px solid rgba(255,90,166,.22);
+      color: rgba(58,43,61,.75);
+    }
+
+    .msg{
+      font-size: 18px;
+      line-height: 1.35;
+      margin: 10px 0 18px;
+      white-space: pre-wrap;
+    }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+
+    button{
+      flex:1; min-width:140px;
+      border:0;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 16px;
+      cursor:pointer;
+      transition: transform 120ms ease, box-shadow 200ms ease, filter 200ms ease, opacity 200ms ease;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+    .yes{
+      color:white;
+      background: linear-gradient(135deg, var(--yes1), var(--yes2));
+      box-shadow: 0 14px 30px rgba(255, 90, 166, .22);
+    }
+    .no{
+      color:white;
+      background: linear-gradient(135deg, var(--no1), var(--no2));
+      box-shadow: 0 14px 30px rgba(120, 130, 255, .18);
+    }
+    button:hover{ filter: brightness(1.03); }
+
+    h1 strong{
+    color:#ff5aa6;
+    font-weight:700;
+    }
+
+    /* Panel animable auto-ajuste */
+    .panel{
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.7);
+      background: rgba(255,255,255,.45);
+
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition:
+        height 420ms ease,
+        opacity 320ms ease,
+        transform 320ms ease;
+      pointer-events:none;
+    }
+    .panel.open{
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+
+    .center-text{
+        text-align: center;
+        }
+
+    .panel h2{ margin: 0 0 10px; font-size: 16px; display:flex; align-items:center; gap:8px; }
+    .detail{ margin: 6px 0; }
+    .label{ color: var(--muted); }
+
+    .status{
+      margin-top: 12px;
+      color: rgba(58,43,61,.9);
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.42);
+      border: 1px solid rgba(255,255,255,.7);
+    }
+    .tiny{ margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+    .sparkle{
+      width:34px; height:34px; border-radius:12px;
+      display:grid; place-items:center;
+      background: rgba(255,90,166,.12);
+      border: 1px solid var(--ring);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .panel{transition:none}
+      .bubble{animation:none}
+      button{transition:none}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Burbujas -->
+  <div class="bubbles" aria-hidden="true">
+    <div class="bubble" style="left:6%;  width:64px;  height:64px;  animation-duration:16s; animation-delay:-2s;"></div>
+    <div class="bubble" style="left:18%; width:28px;  height:28px;  animation-duration:12s; animation-delay:-7s; opacity:.7;"></div>
+    <div class="bubble" style="left:30%; width:92px;  height:92px;  animation-duration:20s; animation-delay:-10s;"></div>
+    <div class="bubble" style="left:44%; width:40px;  height:40px;  animation-duration:14s; animation-delay:-5s;"></div>
+    <div class="bubble" style="left:58%; width:120px; height:120px; animation-duration:24s; animation-delay:-14s; opacity:.75;"></div>
+    <div class="bubble" style="left:70%; width:34px;  height:34px;  animation-duration:13s; animation-delay:-3s;"></div>
+    <div class="bubble" style="left:82%; width:76px;  height:76px;  animation-duration:18s; animation-delay:-9s;"></div>
+    <div class="bubble" style="left:92%; width:46px;  height:46px;  animation-duration:15s; animation-delay:-6s; opacity:.7;"></div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+    <h1>
+        <span class="sparkle center-text">💌</span>
+        Estimada <strong class="center-text">Mariana Garro Álvarez</strong>
+      </h1>
+    </div>
+
+    <div class="row center-text">
+        <h4>
+            Mediante este medio me gustaría confirmar nuestra salida de mañana. 😌
+          </h4>
+    </div>
+
+    <div class="row center-text">
+        <h4>
+            Han sido días muy difíciles para vos, lo sé, créeme que con esta propuesta 
+            solo quiero que salgas un poco de la rutina y haré todo lo posible porque lo 
+            disfrutes y estés bien. Y claro, celebrar tu esfuerzo.
+          </h4>
+    </div>
+      
+
+    <div id="message" class="msg"></div>
+
+    <div class="row">
+    <div id="status" class="status center-text">Toma la decisión que nazca de tu corazoncito, sin compromiso 👇</div>
+    <div class="tiny" id="tiny"></div>
+    </div>
+
+    <div class="row">
+      <button class="yes" id="btnYes">Sí 💖</button>
+      <button class="no" id="btnNo">No 🫶</button>
+    </div>
+
+    <div id="panelYes" class="panel" aria-live="polite">
+      <h2>✨ Detalles</h2>
+      <div class="detail"><span class="label">Lugar:</span> <span id="place"></span></div>
+      <div class="detail"><span class="label">Fecha:</span> <span id="date"></span></div>
+      <div class="detail"><span class="label">Hora:</span> <span id="time"></span></div>
+      <div class="detail" id="extraWrap" style="display:none">
+        <span class="label">Nota:</span> <span id="extra"></span>
+      </div>
+      <div class="tiny">Si te queda mejor otro lugar/hora, lo ajustamos sin drama 💗</div>
+    </div>
+
+    <div id="panelNo" class="panel" aria-live="polite">
+      <h2>Todo bien 🫧</h2>
+      <div class="detail" id="noMessage"></div>
+      <div class="tiny">Gracias por responder. Cero presión ✨</div>
+    </div>
+
+  </div>
+
+  <!-- EmailJS (sin backend) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <script>
+    // =========================
+    // 1) CONFIGURACIÓN EMAILJS
+    // =========================
+    // Reemplazá estos 3 valores con los tuyos:
+    const EMAILJS_PUBLIC_KEY = "LCxPqCF6jDiEk8vlw";
+    const EMAILJS_SERVICE_ID = "service_iqh2wwn";
+    const EMAILJS_TEMPLATE_ID = "template_r3r0z9p";
+
+    // El correo destino (tu correo)
+    const TO_EMAIL = "stevefdz14@gmail.com";
+
+    // Inicializa EmailJS
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    // =========================
+    // 2) LECTURA DE PARAMETROS
+    // =========================
+    const qs = new URLSearchParams(location.search);
+
+    const msg = qs.get("msg") || "💗💗💗💗💗";
+    const place = qs.get("place") || "Es sorpresa!! Pero no entres en pánico, es en San José";
+    const date  = qs.get("date")  || "Miércoles 11 de Febrero ";
+    const time  = qs.get("time")  || "6:45 PM";
+    const extra = qs.get("extra") || "Vos me dices a donde paso por ti";
+    const noMsg = qs.get("no_msg") || "Tranqui 💗, si quieres me cuentas la razón pero de verdad todo bien!!";
+
+    document.getElementById("message").textContent = msg;
+    document.getElementById("message").classList.add("center-text");
+    document.getElementById("place").textContent = place;
+    document.getElementById("date").textContent  = date;
+    document.getElementById("time").textContent  = time;
+
+    if (extra.trim()) {
+      document.getElementById("extra").textContent = extra;
+      document.getElementById("extraWrap").style.display = "block";
+    }
+    document.getElementById("noMessage").textContent = noMsg;
+
+
+    // =========================
+    // 3) UI: AUTO-AJUSTE PANELES
+    // =========================
+    const panelYes = document.getElementById("panelYes");
+    const panelNo  = document.getElementById("panelNo");
+    const statusEl = document.getElementById("status");
+
+    function closePanel(panel){
+      panel.style.height = panel.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        panel.style.height = "0px";
+        panel.style.opacity = 0;
+      });
+      panel.classList.remove("open");
+    }
+
+    function openPanel(panel){
+      panel.classList.add("open");
+      panel.style.height = panel.scrollHeight + "px";
+      panel.style.opacity = 1;
+
+      panel.addEventListener("transitionend", function handler(e){
+        if (e.propertyName === "height") {
+          panel.style.height = "auto";
+          panel.removeEventListener("transitionend", handler);
+        }
+      });
+    }
+
+    function switchPanel(openOne, closeOne){
+      if (closeOne.classList.contains("open")) closePanel(closeOne);
+      openPanel(openOne);
+    }
+
+    function lockButtons(){
+      ["btnYes","btnNo"].forEach(id => {
+        const b = document.getElementById(id);
+        b.disabled = true;
+        b.style.opacity = 0.7;
+        b.style.cursor = "default";
+      });
+    }
+
+    // =========================
+    // 4) EMAIL: ENVIAR RESPUESTA
+    // =========================
+    async function sendEmail(responseText){
+      // Datos que le mandamos al template de EmailJS
+      const templateParams = {
+        to_email: TO_EMAIL,
+        response: responseText,
+        message: msg,
+        place,
+        date,
+        time,
+        extra: extra || "(sin nota)",
+        page_url: location.href,
+        sent_at: new Date().toLocaleString()
+      };
+
+      // OJO: Para que "to_email" funcione, tu template debe usarlo en el campo To:
+      // To: {{to_email}}
+      return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    }
+
+    // =========================
+    // 5) EVENTOS BOTONES
+    // =========================
+    document.getElementById("btnYes").addEventListener("click", async () => {
+      statusEl.textContent = "Aaaaw 🥰 Enviando tu respuesta... 📩";
+      switchPanel(panelYes, panelNo);
+      lockButtons();
+
+      try {
+        await sendEmail("SÍ");
+        statusEl.textContent = "Listo 💗 Respuesta enviada por correo ✨";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Ups 😕 No pude enviar el correo. Revisá tu configuración de EmailJS.";
+      }
+    });
+
+    document.getElementById("btnNo").addEventListener("click", async () => {
+      statusEl.textContent = "Entendido 🫶 Enviando tu respuesta... 📩";
+      switchPanel(panelNo, panelYes);
+      lockButtons();
+
+      try {
+        await sendEmail("NO");
+        statusEl.textContent = "Listo 🫧 Respuesta enviada por correo ✨";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Ups 😕 No pude enviar el correo. Revisá tu configuración de EmailJS.";
+      }
+    });
+  </script>
+</body>
+</html>
